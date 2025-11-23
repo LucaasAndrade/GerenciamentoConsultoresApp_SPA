@@ -14,8 +14,8 @@ export default (db) => {
                 ultimo_update   DATETIME
             );
 
-            INSERT INTO tb_auth(login, password, data_criacao) 
-                VALUES("root", "root", "10-10-2000")
+            INSERT INTO tb_admin(login, password, data_criacao) 
+                VALUES("root", "root", "10-10-2000");
         `;
 
         db.serialize(() => {
@@ -29,10 +29,11 @@ export default (db) => {
         });
     });
 
-    // Endpoint to get a consultant by ID
-    router.get('/admin/:id', (req, res) => {
-        const { id } = req.params;
-        db.get('SELECT * FROM tb_auth WHERE id_admin = ?', [id], (err, row) => {
+    // Endpoint to get a consultant for login
+    router.post('/admin/login', (req, res) => {
+        const { login, password } = req.body;
+        console.log("passei")
+        db.get('SELECT id_admin, login, password FROM tb_admin WHERE login = ? AND password = ?', [login, password], (err, row) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
@@ -46,7 +47,7 @@ export default (db) => {
         const { page = 1, limit = 10 } = req.query;
         const offset = (page - 1) * limit;
 
-        db.all('SELECT * FROM tb_auth LIMIT ? OFFSET ?', [limit, offset], (err, rows) => {
+        db.all('SELECT * FROM tb_admin LIMIT ? OFFSET ?', [limit, offset], (err, rows) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
@@ -62,7 +63,7 @@ export default (db) => {
         const ultimo_update = new Date().toISOString();
 
         db.run(
-            'INSERT INTO tb_auth (login, password, data_criacao, ultimo_update) VALUES (?, ?, ?, ?)',
+            'INSERT INTO tb_admin (login, password, data_criacao, ultimo_update) VALUES (?, ?, ?, ?)',
             [login, password, data_criacao, ultimo_update],
             function (err) {
                 if (err) {
@@ -81,7 +82,7 @@ export default (db) => {
         const ultimo_update = new Date().toISOString();
 
         db.run(
-            'UPDATE tb_auth SET login = ?, password = ?, ultimo_update = ? WHERE id_admin = ?',
+            'UPDATE tb_admin SET login = ?, password = ?, ultimo_update = ? WHERE id_admin = ?',
             [login, password, ultimo_update, id],
             function (err) {
                 if (err) {
@@ -96,7 +97,7 @@ export default (db) => {
     // Endpoint to delete a consultant
     router.delete('/admin/:id', (req, res) => {
         const { id } = req.params;
-        db.run('DELETE FROM tb_auth WHERE id_admin = ?', [id], function (err) {
+        db.run('DELETE FROM tb_admin WHERE id_admin = ?', [id], function (err) {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
