@@ -41,6 +41,22 @@ router.get('/admin', async (req, res) => {
     }
 });
 
+
+// ENDPOINT GET ONE
+router.get('/admin/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const rs = await client.execute({
+            sql: 'SELECT * FROM tb_admin WHERE id_admin = ?',
+            args: [id]
+        });
+        res.json({...rs.rows[0]});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Endpoint to add a new consultant
 router.post('/admin', async (req, res) => {
     const { login, password } = req.body;
