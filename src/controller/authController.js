@@ -14,7 +14,7 @@ router.post('/admin/login', async (req, res) => {
         });
         
         if (rs.rows.length > 0) {
-            res.json({ message: "Login successful", user: rs.rows[0] });
+            res.json({ message: "Login successful", user: Number(rs.rows[0].id_admin) });
         } else {
             res.status(401).json({ message: "Invalid credentials" });
         }
@@ -52,7 +52,7 @@ router.post('/admin', async (req, res) => {
             sql: 'INSERT INTO tb_admin (login, password, data_criacao, ultimo_update) VALUES (?, ?, ?, ?)',
             args: [login, password, data_criacao, ultimo_update]
         });
-        res.status(201).json({ message: "Admin criado com sucesso" });
+        res.status(201).json({ id: Number(rs.lastInsertRowid )});
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
