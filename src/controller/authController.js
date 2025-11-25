@@ -14,7 +14,7 @@ router.post('/admin/login', async (req, res) => {
         });
         
         if (rs.rows.length > 0) {
-            res.json({ message: "Login successful", user: Number(rs.rows[0].id_admin) });
+            res.json({ message: "Login successful", id_admin: Number(rs.rows[0].id_admin) });
         } else {
             res.status(401).json({ message: "Invalid credentials" });
         }
