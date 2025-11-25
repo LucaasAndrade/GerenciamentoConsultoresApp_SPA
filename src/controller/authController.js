@@ -29,6 +29,24 @@ export default (db) => {
         });
     });
 
+        router.get('/migrate/auth', (req, res) => {
+        const tb_auth = `
+            INSERT INTO tb_admin(login, password, data_criacao) 
+                VALUES("root", "root", "10-10-2000");
+        `;
+
+        db.run(() => {
+            db.run(tb_auth, (err) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
+                }
+                res.json({ message: "OK" });
+            });
+        });
+    });
+
+
     // Endpoint to get a consultant for login
     router.post('/admin/login', (req, res) => {
         const { login, password } = req.body;
