@@ -40,6 +40,18 @@ export default (db) => {
         });
     });
 
+    // Endpoint for filter by name
+    router.get('/consultores/filtered/:nome', (req, res) => {
+        const { nome } = req.params;
+        db.get('SELECT * FROM tb_consultor WHERE nome like ?', [nome + "%"], (err, rows) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json(rows);
+        });
+    });
+
     // Endpoint for paginated query of all consultants
     router.get('/consultores', (req, res) => {
         const { page = 1, limit = 10 } = req.query;
